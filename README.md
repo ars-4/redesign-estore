@@ -1,4 +1,5 @@
-# alchemy
+# Redesign Store <br> <span style="font-size:12px">By Redesign Studios</span>
+
 
 ## Project setup
 ```

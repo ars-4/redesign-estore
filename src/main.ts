@@ -8,6 +8,10 @@ import '@/assets/css/icons.css';
 
 const app = createApp(App);
 
+app.config.globalProperties.$api = 'http://localhost:8000/api';
+
+app.config.globalProperties.$auth = true;
+
 
 app.use(store);
 

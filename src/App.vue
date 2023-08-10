@@ -19,8 +19,14 @@
           <span class="icon icon-user" @click="toggle_user_data()"></span>
           <span @click="$router.push('/cart')" class="icon icon-cart-bag-outline"></span>
           <div class="user-data">
-            <a @click="logout()" class="link-danger" v-if="$store.state.logged_in">Logout</a>
-            <a @click="login()" class="link-primary" v-else>Login</a>
+            <div v-if="$store.state.logged_in">
+              <a @click="$router.push('/profile')" class="link-primary">Profile</a>
+              <br>
+              <a @click="logout()" class="link-danger">Logout</a>
+            </div>
+            <div v-else>
+              <a @click="$router.push('profile/')" class="link-primary">Login</a>
+            </div>
           </div>
         </div>
       </div>
@@ -286,6 +292,7 @@ nav .navbar .right-side .user-data a {
 <script>
 
 import { defineComponent } from 'vue';
+import AuthComponent from '@/components/AuthComponent.vue';
 
 export default defineComponent({
   data() {
@@ -302,16 +309,19 @@ export default defineComponent({
       } else {
         this.$store.state.logged_in = false;
       }
+      console.log(this.$store.state.logged_in)
     },
 
     login: function () {
       localStorage.setItem('token', 'dummy_token');
       this.check_login();
+      this.toggle_user_data();
     },
 
     logout: function () {
       localStorage.removeItem('token');
       this.check_login();
+      this.toggle_user_data();
     },
 
     toggle_user_data: function () {
@@ -321,7 +331,7 @@ export default defineComponent({
       } else {
         user_data_modal.style.height = "30px";
       }
-    }
+    },
 
   },
 

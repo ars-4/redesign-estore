@@ -247,7 +247,31 @@ export default defineComponent({
       e.target.classList.add('active');
     },
 
+    get_products: async function() {
+      this.products = []
+      await fetch(`${this.$api}/products/`).then(res=>{
+        return res.json()
+      }).then((data)=>{
+        for(let item of data) {
+          // console.log(item[0].image)
+          let obj = {
+            id: item.id,
+            title: item.title,
+            badge: item.badge,
+            image: item.images[0].image,
+            old_price: Number(item.old_price),
+            new_price: Number(item.total_price)
+          }
+          this.products.push(obj)
+        }
+      })
+    }
+
   },
+
+  beforeMount() {
+    this.get_products()
+  }
 
 })
 

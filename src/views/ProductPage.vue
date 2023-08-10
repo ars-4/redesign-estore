@@ -2,31 +2,26 @@
     <div class="product">
 
         <div class="details">
-            <span class="path">Shop / Arrivals / The Analog Complete Kit</span>
+            <span class="path">Shop / Arrivals / {{ $router.currentRoute['fullPath'] }}</span>
             <div class="row">
                 <div class="col-md-6">
                     <div class="container">
                         <div class="selected_image">
-                            <img src="" alt="">
+                            <img :src="image" alt="Selected Image">
                         </div>
                         <div class="carousel row">
-                            <div class="col-2"><img src="" alt=""></div>
-                            <div class="col-2"><img src="" alt=""></div>
-                            <div class="col-2"><img src="" alt=""></div>
-                            <div class="col-2"><img src="" alt=""></div>
-                            <div class="col-2"><img src="" alt=""></div>
-                            <div class="col-2"><img src="" alt=""></div>
+                            <div class="col-2" v-for="img in this.product.images" :key="img"><img :src="img.image" @click="select_image($event)" :alt="img.title"></div>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-md-6">
                     <div class="details">
-                        <h1>The Analog Complete Kit</h1>
+                        <h1>{{ this.product.title }}</h1>
                         <div class="price">
-                            <span class="old_price">$172.00</span>
+                            <span class="old_price">${{ Number(this.product.old_price).toFixed(2) }}</span>
                             &nbsp;
-                            <span class="new_price">$162.00</span>
+                            <span class="new_price">${{ Number(this.product.price).toFixed(2) }}</span>
                         </div>
                         <div class="rating">
                             <div class="stars">
@@ -40,41 +35,26 @@
                         </div>
                         <hr>
                         <div class="add_to_cart">
-                            <button class="btn" @click="add_to_cart">Add to cart - $162.00</button>
-                            <span class="text-center">Free Pakistan Shipping $150.00</span>
+                            <button class="btn" @click="add_to_cart">Add to cart - ${{ (Number(this.product.price) + Number(this.product.shipping_price)).toFixed(2) }}</button>
+                            <span class="text-center">Free Pakistan Shipping ${{ Number(this.product.price).toFixed(2) }}</span>
                         </div>
                         <div class="info">
-                            <span>The Ultimate Analog Kit.</span>
+                            <span>The Ultimate {{ this.product.title }}. <b>({{ this.product.category[0].title }})</b></span>
                             <br>
                             <span>This bundle includes:</span>
                             <ul>
-                                <li><a href="#">A Tie (Red)</a></li>
-                                <li><a href="#">A Dress Shirt (Polo)</a></li>
-                                <li><a href="#">Leather Wallet (Brown)</a></li>
-                                <li><a href="#">Redesign Special</a></li>
+                                <li v-for="item in this.product.bundle" :key="item"><a href="#">{{ item.title }}</a></li>
                             </ul>
                             <div class="info-detail">
-                                <span class="title">Meet Analog: </span>
-                                <span>The Simplest Productivity System. Analog is a physical companion for your
-                                    digital tools. That helps you priortize and focus on your most important tasks.
-                                </span>
+                                <span class="title">Description: </span>
+                                <span>{{ this.product.description }}</span>
                             </div>
 
                             <div class="accordions" @click="expand_accordion($event)">
-                                <div class="accordion">
-                                    <span class="summary">→ Details</span>
+                                <div class="accordion" v-for="question in faqs" :key="question">
+                                    <span class="summary">→ {{ question.question }}</span>
                                     <span class="details">
-                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi facere consequuntur
-                                        dicta accusamus nam consequatur obcaecati! Iure atque, ut sint autem quaerat minima
-                                        facilis aliquid illo natus debitis velit neque?
-                                    </span>
-                                </div>
-                                <div class="accordion">
-                                    <span class="summary">→ Details</span>
-                                    <span class="details">
-                                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi facere consequuntur
-                                        dicta accusamus nam consequatur obcaecati! Iure atque, ut sint autem quaerat minima
-                                        facilis aliquid illo natus debitis velit neque?
+                                        {{ question.answer }}
                                     </span>
                                 </div>
                             </div>
@@ -246,6 +226,11 @@
 import { defineComponent } from 'vue';
 
 export default defineComponent({
+    data() {return{
+        product: {},
+        faqs: [],
+        image: "",
+    }},
     methods: {
         expand_accordion: function(e) {
             let element = e.target.parentElement;
@@ -258,7 +243,38 @@ export default defineComponent({
 
         add_to_cart: function() {
             this.$store.commit('add_item', {id:Number(this.$route.params.id), qty:1, title:'The Analog Complete Set', price:162});
-        }
+        },
+
+        select_image: function(e){
+            this.image = e.target.src;
+        },
+
+        get_faqs: async function(){
+            await fetch(`${this.$api}/faqs/${this.$route.params.id}`).then(res=>{return res.json()}).then(
+                data => {
+                    this.faqs = data;
+                }
+            )
+        },
+
+        get_product: async function() {
+            await fetch(`${this.$api}/products/${this.$route.params.id}`).then(res=>{return res.json()}).then(
+                data => {
+                    this.product = data;
+                    this.image = data.images[0].image;
+                    this.get_faqs();
+                }
+            )
+        },
+
+    },
+
+    created() {
+        this.$watch(() => this.$route.params, (toParams, previousParams) => { this.get_product(); })
+    },
+
+    beforeMount() {
+        this.get_product();
     }
 })
 

@@ -50,7 +50,7 @@
                     <br>
                     <div class="row">
                         <div class="col-4">
-                            <button class="btn btn-dark">Submit</button>
+                            <button class="btn btn-dark" @click="create_order()">Submit</button>
                         </div>
                     </div>
                 </div>
@@ -156,7 +156,28 @@ export default defineComponent({
         },
         set_payment_option: function(e) {
             this.payment = e.target.value;
+        },
+
+        create_order: async function() {
+            let order = {
+                products: this.$store.state.items,
+                total: this.totals.price,
+                payment: this.payment
+            }
+            await fetch(`${this.$api}/cart/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Token ${localStorage.getItem('token')}`
+                },
+                body: JSON.stringify(order)
+            }).then(res => {return res.json()}).then(data => {
+                console.log(data);
+            }).catch(err => {
+                console.log(err);
+            })
         }
+
     },
 
     computed: {

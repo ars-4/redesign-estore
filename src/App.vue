@@ -312,12 +312,6 @@ export default defineComponent({
       console.log(this.$store.state.logged_in)
     },
 
-    login: function () {
-      localStorage.setItem('token', 'dummy_token');
-      this.check_login();
-      this.toggle_user_data();
-    },
-
     logout: function () {
       localStorage.removeItem('token');
       this.check_login();

@@ -79,13 +79,14 @@ export default defineComponent({
         check_login: function () {
             if (localStorage.getItem('token') != undefined && localStorage.getItem('token').length > 10) {
                 this.$store.state.logged_in = true;
+                this.$router.go();
             } else {
                 this.$store.state.logged_in = false;
             }
         },
 
         login: function () {
-            fetch(`${this.api}/login`, {
+            fetch(`${this.$api}/login/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

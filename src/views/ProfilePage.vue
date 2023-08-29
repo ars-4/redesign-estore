@@ -99,7 +99,6 @@
     margin: 4px 4px;
 }
 
-.profile .body .personal .row.order .header {}
 </style>
 
 <script>

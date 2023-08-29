@@ -15,5 +15,5 @@ app.config.globalProperties.$auth = true;
 
 app.use(store);
 
-app.use(router)
-app.mount('#app')
+app.use(router);
+app.mount('#app');

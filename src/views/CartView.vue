@@ -164,7 +164,9 @@ export default defineComponent({
                 total: this.totals.price,
                 payment: this.payment
             }
-            await fetch(`${this.$api}/cart/`, {
+            if(this.payment === 'null') { alert('Please Select Payment Option'); }
+            else {
+                await fetch(`${this.$api}/cart/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -176,6 +178,7 @@ export default defineComponent({
             }).catch(err => {
                 console.log(err);
             })
+            }
         }
 
     },

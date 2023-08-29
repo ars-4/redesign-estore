@@ -12,7 +12,6 @@ app.config.globalProperties.$api = "https://redesign-estore-backend.ars-4.repl.c
 
 app.config.globalProperties.$auth = true;
 
-
 app.use(store);
 
 app.use(router);

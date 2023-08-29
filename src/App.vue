@@ -309,7 +309,6 @@ export default defineComponent({
       } else {
         this.$store.state.logged_in = false;
       }
-      console.log(this.$store.state.logged_in)
     },
 
     logout: function () {

@@ -8,7 +8,7 @@ import '@/assets/css/icons.css';
 
 const app = createApp(App);
 
-app.config.globalProperties.$api = process.env.API_BACKEND;
+app.config.globalProperties.$api = "https://redesign-estore-backend.ars-4.repl.co/api";
 
 app.config.globalProperties.$auth = true;
 
